@@ -13,6 +13,8 @@
 		4B923C5B234AC9CF00BF1852 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B923C59234AC9CF00BF1852 /* Main.storyboard */; };
 		4B923C5D234AC9D000BF1852 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B923C5C234AC9D000BF1852 /* Assets.xcassets */; };
 		4B923C60234AC9D000BF1852 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B923C5E234AC9D000BF1852 /* LaunchScreen.storyboard */; };
+		4B923C68234AD09C00BF1852 /* MemoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B923C67234AD09C00BF1852 /* MemoriesViewController.swift */; };
+		4B923C6A234AD12700BF1852 /* MemoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B923C69234AD12700BF1852 /* MemoryCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		4B923C5C234AC9D000BF1852 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B923C5F234AC9D000BF1852 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4B923C61234AC9D000BF1852 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B923C67234AD09C00BF1852 /* MemoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoriesViewController.swift; sourceTree = "<group>"; };
+		4B923C69234AD12700BF1852 /* MemoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				4B923C55234AC9CF00BF1852 /* SceneDelegate.swift */,
 				4B923C57234AC9CF00BF1852 /* ViewController.swift */,
 				4B923C59234AC9CF00BF1852 /* Main.storyboard */,
+				4B923C69234AD12700BF1852 /* MemoryCell.swift */,
+				4B923C67234AD09C00BF1852 /* MemoriesViewController.swift */,
 				4B923C5C234AC9D000BF1852 /* Assets.xcassets */,
 				4B923C5E234AC9D000BF1852 /* LaunchScreen.storyboard */,
 				4B923C61234AC9D000BF1852 /* Info.plist */,
@@ -141,6 +147,8 @@
 				4B923C58234AC9CF00BF1852 /* ViewController.swift in Sources */,
 				4B923C54234AC9CF00BF1852 /* AppDelegate.swift in Sources */,
 				4B923C56234AC9CF00BF1852 /* SceneDelegate.swift in Sources */,
+				4B923C68234AD09C00BF1852 /* MemoriesViewController.swift in Sources */,
+				4B923C6A234AD12700BF1852 /* MemoryCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +295,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4EFH9TWN7W;
 				INFOPLIST_FILE = HappyDays/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,6 +314,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4EFH9TWN7W;
 				INFOPLIST_FILE = HappyDays/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
