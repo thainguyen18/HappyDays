@@ -10,6 +10,8 @@ import UIKit
 import AVFoundation
 import Photos
 import Speech
+import CoreSpotlight
+import MobileCoreServices
 
 class MemoriesViewController: UICollectionViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegateFlowLayout, AVAudioRecorderDelegate {
     
@@ -274,9 +276,34 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
                 // ...and write it to disk at the correct filename for this memory.
             
                 do {
-                    try text.write(to: transcription, atomically: true,
-                                   encoding: String.Encoding.utf8) } catch {
-                                    print("Failed to save transcription.") }
+                    try text.write(to: transcription, atomically: true, encoding: String.Encoding.utf8)
+                    self.indexMemory(memory: memory, text: text)
+                } catch {
+                    print("Failed to save transcription.")
+                    
+                }
+            }
+        }
+    }
+    
+    func indexMemory(memory: URL, text: String) {
+        let attributeSet = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+        attributeSet.title = "Happy Days Memory"
+        attributeSet.contentDescription = text
+        attributeSet.thumbnailURL = thumbnailURL(for: memory)
+        
+        // Wrap it in a searchable item, using the memory's full path as its unique identifier
+        let item = CSSearchableItem(uniqueIdentifier: memory.path, domainIdentifier: "com.thainguyen", attributeSet: attributeSet)
+        
+        // make it never expire
+        item.expirationDate = .distantFuture
+        
+        // ask Spotlight to index it
+        CSSearchableIndex.default().indexSearchableItems([item]) { error in
+            if let error = error {
+                print("Indexing error: \(error.localizedDescription)")
+            } else {
+                print("Search item successfully indexed: \(text)")
             }
         }
     }
