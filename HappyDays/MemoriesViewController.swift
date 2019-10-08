@@ -13,13 +13,17 @@ import Speech
 import CoreSpotlight
 import MobileCoreServices
 
-class MemoriesViewController: UICollectionViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegateFlowLayout, AVAudioRecorderDelegate {
+class MemoriesViewController: UICollectionViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegateFlowLayout, AVAudioRecorderDelegate, UISearchBarDelegate {
     
     var memories = [URL]()
     var activeMemory: URL!
     var audioRecorder: AVAudioRecorder?
     var recordingURL: URL!
     var audioPlayer: AVAudioPlayer?
+    
+    var filteredMemories = [URL]()
+    
+    var searchQuery: CSSearchQuery?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,6 +130,8 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
         
         audioPlayer?.stop()
         
+        filteredMemories.removeAll()
+        
         memories.removeAll()
         
         guard let files = try? FileManager.default.contentsOfDirectory(at: getDocumentDirectory(), includingPropertiesForKeys: nil, options: []) else { return }
@@ -142,6 +148,8 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
             }
         }
         
+        filteredMemories = memories
+        
         // Load collection views
         collectionView.reloadSections(IndexSet(integer: 1))
     }
@@ -155,14 +163,14 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
         if section == 0 {
             return 0
         } else {
-            return memories.count
+            return filteredMemories.count
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Memory", for: indexPath) as! MemoryCell
         
-        let memory = memories[indexPath.row]
+        let memory = filteredMemories[indexPath.row]
         
         let imageName = thumbnailURL(for: memory).path
         
@@ -188,7 +196,7 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
         if sender.state == .began {
             let cell = sender.view as! MemoryCell
             if let index = collectionView?.indexPath(for: cell) {
-                activeMemory = memories[index.row]
+                activeMemory = filteredMemories[index.row]
                 recordMemory()
             }
         } else if sender.state == .ended {
@@ -323,7 +331,7 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let memory = memories[indexPath.row]
+        let memory = filteredMemories[indexPath.row]
         let fm = FileManager.default
         do {
             let audioName = audioURL(for: memory)
@@ -358,4 +366,52 @@ class MemoriesViewController: UICollectionViewController, UINavigationController
         return memory.appendingPathExtension("txt")
     }
     
+    // In app Search Bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterMemories(text: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func activateFilter(matches: [CSSearchableItem]) {
+        filteredMemories = matches.map { item in
+            return URL(fileURLWithPath: item.uniqueIdentifier)
+        }
+        
+        UIView.performWithoutAnimation {
+            collectionView?.reloadSections(IndexSet(integer: 1))
+        }
+    }
+    
+    func filterMemories(text: String) {
+        guard text.count > 0 else {
+            filteredMemories = memories
+            
+            UIView.performWithoutAnimation {
+                collectionView?.reloadSections(IndexSet(integer: 1))
+            }
+            
+            return
+        }
+        
+        var allItems = [CSSearchableItem]()
+        searchQuery?.cancel()
+        
+        let queryString = "contentDescription == \"*\(text)*\"c"
+        searchQuery = CSSearchQuery(queryString: queryString, attributes: nil)
+        
+        searchQuery?.foundItemsHandler = { items in
+            allItems.append(contentsOf: items)
+        }
+        
+        searchQuery?.completionHandler = { error in
+            DispatchQueue.main.async { [unowned self] in
+                self.activateFilter(matches: allItems)
+            }
+        }
+        
+        searchQuery?.start()
+    }
 }
